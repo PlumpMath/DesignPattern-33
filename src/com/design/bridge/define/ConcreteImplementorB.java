@@ -1,4 +1,4 @@
-package com.design.bridge;
+package com.design.bridge.define;
 
 public class ConcreteImplementorB implements Implementor {
 
