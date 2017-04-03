@@ -45,7 +45,7 @@ public class Main {
 //			System.out.println(Thread.currentThread().getName() + ";TrainTicket : " + trainTicket);
 			
 			try {
-				Thread.sleep(1 * 1000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

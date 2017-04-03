@@ -8,27 +8,40 @@ public abstract class ObjectPool {
 
 	public ObjectUnit obtain() {
 		ObjectUnit objectUnit = getObjectUnit();
-		synchronized (mObjectUnits) {
-			if (objectUnit == null) {
+
+		if (objectUnit == null) {
+			synchronized (mObjectUnits) {
 				if (mObjectUnits.size() < MAX_POOL_SIZE) {
 					objectUnit = createNewObjectUnit();
 					objectUnit.isRecycled = false;
 					mObjectUnits.add(objectUnit);
-					System.out.println(Thread.currentThread().getName() + " new ObjectUnit");
+					System.out.println(Thread.currentThread().getName()
+							+ " new ObjectUnit");
 				} else {
-					try {
-						long time1 = System.currentTimeMillis();
-						mObjectUnits.wait();
-						System.out.println(Thread.currentThread().getName() + " wait : " + (System.currentTimeMillis() - time1));
-						objectUnit = getObjectUnit();
-						objectUnit.isRecycled = false;
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					while(true) {
+						try {
+							long time1 = System.currentTimeMillis();
+							mObjectUnits.wait();
+							System.out
+									.println(Thread.currentThread().getName()
+											+ " wait : "
+											+ (System.currentTimeMillis() - time1));
+							objectUnit = getObjectUnit();
+							if(objectUnit != null) {
+								objectUnit.isRecycled = false;
+								break;
+							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
+					
 				}
-			}else {
-				System.out.println(Thread.currentThread().getName() + " cache ObjectUnit");
 			}
+			
+		} else {
+			System.out.println(Thread.currentThread().getName()
+					+ " cache ObjectUnit");
 		}
 
 		return objectUnit;
@@ -47,11 +60,13 @@ public abstract class ObjectPool {
 		}
 		return null;
 	}
+
 	public void recycle() {
 		synchronized (mObjectUnits) {
 			mObjectUnits.notifyAll();
 		}
-		
+
 	}
+
 	protected abstract ObjectUnit createNewObjectUnit();
 }
