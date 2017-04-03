@@ -42,7 +42,7 @@ public class Main {
 			trainTicket.carcompomentNumber = random.nextInt(20);
 			trainTicket.seatNumber = random.nextInt(120);
 			
-//			System.out.println(Thread.currentThread().getName() + ";TrainTicket : " + trainTicket);
+			System.out.println(Thread.currentThread().getName() + ";TrainTicket : " + trainTicket);
 			
 			try {
 				Thread.sleep(100);
